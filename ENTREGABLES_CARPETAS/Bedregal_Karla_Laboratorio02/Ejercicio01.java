@@ -121,7 +121,7 @@ public class Ejercicio01 {
         System.out.println("Ingrese letra: ");
         laLetra = sc.next();
         //Verificar si es una sola letra 
-        while(laLetra.length()!= 1 || !Character.isLetter(laLetra.charAt(0))){ //PLETAR PARA VALIDAR CARACTERES PERMITIDOS a-z
+        while(laLetra.length()!= 1 || !Character.isLetter(laLetra.charAt(0))){ // a-z
             System.out.println("ERROR - Ingrese una letra válida"); //Mensaje de error
             laLetra = sc.next(); //Se pide una nueva letra
         }
