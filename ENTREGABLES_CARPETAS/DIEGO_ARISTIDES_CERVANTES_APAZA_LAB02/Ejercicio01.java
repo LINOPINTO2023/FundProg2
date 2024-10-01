@@ -1,0 +1,174 @@
+//Autor: Diego Aristides Cervantes Apaza
+//Problema:
+//Juego del ahoracado
+//En este ejercicio se le solicita a usted implementar el juego del ahorcado utilizando el código parcial que
+//se le entrega.
+//Deberá considerar que:
+//• El juego valida el ingreso de letras solamente. En caso el usuario ingrese un carácter equivocado
+//le dará el mensaje de error y volverá a solicitar el ingreso
+//• El juego supone que el usuario no ingresa una letra ingresada previamente
+//• El método ingreseLetra() debe ser modificado para incluir las consideraciones de validación
+//• Puede crear métodos adicionales
+package lab2_diegocervantes;
+
+import java.util.Scanner;
+import java.util.Random;
+public class Ejercicio01 {
+    public static void main(String []args){
+        //Figuras del ahorcado
+        String ahor1 = " +---+  \n"+
+                       " |   |  \n" +
+                       "     |  \n" +
+                       "     |  \n" +
+                       "     |  \n" +
+                       "     |  \n" +
+                       "========= ";
+        String ahor2 = " +---+ \n"+
+                       " |   | \n"+
+                       " O   | \n"+
+                       "     | \n"+
+                       "     | \n"+
+                       "     | \n"+
+                       "=========";
+
+        String ahor3 = " +---+ \n"+
+                       " |   | \n"+
+                       " O   | \n"+
+                       " |   | \n"+
+                       "     | \n"+
+                       "     | \n"+
+                       "=========";
+
+        String ahor4 = " +---+ \n"+
+                       "  |  | \n"+
+                       "  O  | \n"+
+                       " /|  | \n"+
+                       "     | \n"+
+                       "     | \n"+    
+                       "=========";
+
+        String ahor5 = " +---+ \n"+
+                       "  |  | \n"+
+                       "  O  | \n"+
+                       " /|\\| \n"+
+                       "     | \n"+
+                       "     | \n"+
+                       "=========";
+
+        String ahor6 = " +---+ \n"+
+                       "  |  | \n"+
+                       "  O  | \n"+
+                       " /|\\| \n"+
+                       " /   | \n"+
+                       "     | \n"+
+                       "=========";
+
+        String ahor7 = " +---+ \n"+
+                       " |   | \n"+
+                       " O   | \n"+
+                       " /|\\| \n"+
+                       " / \\| \n"+
+                       "     | \n"+
+                       "=========";
+        String [] figuras = {ahor1, ahor2, ahor3, ahor4, ahor5, ahor6, ahor7};
+        int contador = 1;
+        String letra;
+        String [] palabras = {"programacion", "java", "indentacion", "clases",
+        "objetos", "desarrollador", "pruebas"};
+
+        String palSecreta = getPalabraSecreta(palabras);
+        String[] letrasAdivinadas = new String[26]; // Para almacenar las letras ingresadas
+        int indiceLetras = 0; // Indice para controlar el número de letras ingresadas
+        char[] palabraActual = new char[palSecreta.length() * 2]; // Para mostrar los guiones y las letras adivinadas
+
+        // Inicializa palabraActual con guiones bajos y espacios
+        for (int i = 0; i < palSecreta.length(); i++) {
+            palabraActual[i * 2] = '_';
+            palabraActual[i * 2 + 1] = ' ';
+        }
+
+        System.out.println(figuras[0]);
+        System.out.println(palabraActual);
+        System.out.println("\n");
+
+        while (contador < 6) {
+            letra = ingreseLetra(letrasAdivinadas, indiceLetras);
+            letrasAdivinadas[indiceLetras++] = letra; // Guardar la letra en el arreglo
+
+            if (letraEnPalabraSecreta(letra, palSecreta)) {
+                actualizarBlancos(letra, palSecreta, palabraActual);
+            } else {
+                contador++;
+                System.out.println(figuras[contador]);
+            }
+
+            System.out.println(palabraActual);
+
+            // Verificar si el jugador ganó
+            if (!new String(palabraActual).contains("_")) {
+                System.out.println("¡Felicidades! Adivinaste la palabra.");
+                return;
+            }
+        }
+
+        System.out.println("Perdiste. La palabra era: " + palSecreta);
+    }
+
+    // Método para obtener una palabra secreta aleatoria
+    public static String getPalabraSecreta(String[] lasPalabras) {
+        int ind = (int) (Math.random() * lasPalabras.length);
+        return lasPalabras[ind];
+    }
+
+    public static void mostrarBlancos(String palabra){
+        for(int i=0; i< palabra.length(); i++){
+            System.out.print("_ " );
+        }
+
+    }
+       // Método para ingresar letra validada, utilizando arreglo de letras ya ingresadas
+    public static String ingreseLetra(String[] letrasAdivinadas, int indiceLetras) {
+        Scanner sc = new Scanner(System.in);
+        String laLetra;
+        boolean letraValida = false;
+
+        do {
+            System.out.println("Ingrese una letra: ");
+            laLetra = sc.next().toLowerCase();
+            if (laLetra.length() != 1 || !Character.isLetter(laLetra.charAt(0))) {
+                System.out.println("Error: Debes ingresar una letra de a-z.");
+            } else if (letraYaIngresada(letrasAdivinadas, laLetra, indiceLetras)) {
+                System.out.println("Ya ingresaste esa letra, prueba con otra.");
+            } else {
+                letraValida = true;
+            }
+        } while (!letraValida);
+
+        return laLetra;
+    }
+
+    // Método para verificar si una letra ya fue ingresada
+    public static boolean letraYaIngresada(String[] letrasAdivinadas, String letra, int indiceLetras) {
+        for (int i = 0; i < indiceLetras; i++) {
+            if (letrasAdivinadas[i].equals(letra)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Método para verificar si la letra está en la palabra secreta
+    public static boolean letraEnPalabraSecreta(String letra, String palSecreta) {
+        return palSecreta.contains(letra);
+    }
+
+    // Método para actualizar los blancos mostrando las letras adivinadas
+    public static void actualizarBlancos(String letra, String palSecreta, char[] palabraActual) {
+        for (int i = 0; i < palSecreta.length(); i++) {
+            if (palSecreta.charAt(i) == letra.charAt(0)) {
+                palabraActual[i * 2] = letra.charAt(0); // Multiplicamos por 2 por el espacio entre "_ "
+            }
+        }
+    }
+}
+
